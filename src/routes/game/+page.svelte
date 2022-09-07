@@ -69,14 +69,12 @@
 			let ctp = k
 			if (k !== text.charAt(pos)) {
 				chars.push(0)
+				tx = Math.random() > 0.5 ? -1 : 1
+				setTimeout(() => (tx = 0), 100)
 				typos++
 				ctp += '-wrong'
 				changeGradeColor()
-			} else {
-				tx = Math.random() > 0.5 ? -0.5 : 0.5
-				setTimeout(() => (tx = 0), 100)
-				chars.push(1)
-			}
+			} else chars.push(1)
 			pos++
 			charsThisSecond.push(ctp)
 			if (pos >= charThreshold)
@@ -104,7 +102,7 @@
 
 <template lang="pug">
 	.text-container(style="mask-image: {mask}")
-		p(style="translate: {tx}rem -{scroll * 2}em;")
+		p(style="translate: {tx}rem -{scroll * 1.5}em;")
 			+each('text.slice(0, pos) as c, i')
 				+if('chars[i] === 1')
 					span.correct {c}
