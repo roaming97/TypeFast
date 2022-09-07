@@ -58,11 +58,8 @@
 						return c.split('-')[1] !== 'wrong'
 					}).length
 				)
-				console.log(grossEntries)
-				console.log(netEntries)
 				grossCPM = calculateCPM(grossEntries)
 				netCPM = calculateCPM(netEntries)
-				console.log(charsThisSecond)
 				charsThisSecond = []
 			}, 1000)
 		if (pos < text.length) {
