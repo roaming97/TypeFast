@@ -3,6 +3,7 @@
 	import { gameNumber } from '$lib/stores'
 	import { Stat } from '$lib/components'
 	import { excludedKeys, charThreshold, gradeColors } from '$lib/data'
+	import { spring } from 'svelte/motion'
 	import { onMount } from 'svelte'
 	export let data: PageServerData
 
@@ -22,15 +23,31 @@
 	$: grade = ((text.length - typos) / text.length) * 100
 	$: gradeColor = gradeColors[0]
 
+	let springDuration = 150
+	let springDistance = 32
+	let animating = false
+	let springTranslation = spring(0, {
+		stiffness: 0.1,
+		damping: 0.25
+	})
+
 	$: chars = [] as number[]
 	let gameNumberOpacity = 0
 	let scroll = 0
-	let tx = 0
 	let timeInterval: NodeJS.Timer
 	let ref: HTMLInputElement
 
 	const changeGradeColor = () =>
 		(gradeColor = grade > 80 ? gradeColors[0] : grade > 50 ? gradeColors[1] : gradeColors[2])
+
+	$: springTranslation.set(animating ? springDistance : 0)
+	$: tx = Math.random() > 0.5 ? `${-$springTranslation}px` : `${$springTranslation}px`
+	$: if (animating) {
+		setTimeout(() => (animating = false), springDuration)
+	}
+	const triggerSpring = () => {
+		if (!animating) animating = true
+	}
 
 	const calculateCPM = (entries: number[]) => {
 		return (
@@ -65,8 +82,7 @@
 			let ctp = k
 			if (k !== text.charAt(pos)) {
 				chars.push(0)
-				tx = Math.random() > 0.5 ? -1 : 1
-				setTimeout(() => (tx = 0), 100)
+				triggerSpring()
 				typos++
 				ctp += '-wrong'
 				changeGradeColor()
@@ -98,7 +114,7 @@
 
 <template lang="pug">
 	.text-container(style="mask-image: {mask}; -webkit-mask-image: {mask}")
-		p(style="translate: {tx}rem -{scroll * 1.5}em;")
+		p(style="translate: {tx} -{scroll * 1.5}em;")
 			+each('text.slice(0, pos) as c, i')
 				+if('chars[i] === 1')
 					span.correct {c}
@@ -110,7 +126,7 @@
 			+if('text.split("")[pos]')
 				span.current-char {text.split("")[pos]}
 			span {text.slice(pos + 1)}
-		input(bind:this!='{ref}' value="" style="translate: {tx}rem -{scroll}em;" on:keydown|preventDefault!="{handleKey}")
+		input(bind:this!='{ref}' value="" style="translate: {tx} -{scroll}em;" on:keydown|preventDefault!="{handleKey}")
 	.stats
 		Stat(name="Typed" value!="{percent}%")
 		Stat(name="Time" value!="{formatTime(time)}")
