@@ -29,9 +29,8 @@
 	let timeInterval: NodeJS.Timer
 	let ref: HTMLInputElement
 
-	const changeGradeColor = () => {
-		gradeColor = grade > 80 ? gradeColors[0] : grade > 50 ? gradeColors[1] : gradeColors[2]
-	}
+	const changeGradeColor = () =>
+		(gradeColor = grade > 80 ? gradeColors[0] : grade > 50 ? gradeColors[1] : gradeColors[2])
 
 	const calculateCPM = (entries: number[]) => {
 		return (
@@ -98,7 +97,7 @@
 </script>
 
 <template lang="pug">
-	.text-container(style="mask-image: {mask}")
+	.text-container(style="mask-image: {mask}; -webkit-mask-image: {mask}")
 		p(style="translate: {tx}rem -{scroll * 1.5}em;")
 			+each('text.slice(0, pos) as c, i')
 				+if('chars[i] === 1')
