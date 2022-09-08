@@ -110,7 +110,7 @@
 			+if('text.split("")[pos]')
 				span.current-char {text.split("")[pos]}
 			span {text.slice(pos + 1)}
-		input(bind:this!='{ref}' value="" style="translate: 0 -{scroll}em;" on:keydown|preventDefault!="{handleKey}")
+		input(bind:this!='{ref}' value="" style="translate: {tx}rem -{scroll}em;" on:keydown|preventDefault!="{handleKey}")
 	.stats
 		Stat(name="Typed" value!="{percent}%")
 		Stat(name="Time" value!="{formatTime(time)}")
@@ -150,7 +150,7 @@
 
 			user-select: none;
 
-			transition: translate 750ms cubic-bezier(0.22, 1, 0.36, 1);
+			transition: translate 1000ms cubic-bezier(0.22, 1, 0.36, 1);
 		}
 
 		input {
